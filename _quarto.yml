@@ -3,12 +3,11 @@ project:
   output-dir: docs
 
 website:
-  title: "zebrafish-multiome-vignette"
+  title: "Introduction"
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
 
 format:
   html:

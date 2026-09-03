@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>zebrafish-multiome-vignette</title>
+<title>Introduction – Zebrafish Multiome Preprocessing Vignette</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -83,7 +83,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">zebrafish-multiome-vignette</span>
+    <span class="navbar-title">Zebrafish Multiome Preprocessing Vignette</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -96,10 +96,6 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
-<span class="menu-text">About</span></a>
-  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -111,15 +107,25 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a>
+  <ul class="collapse">
+  <li><a href="#what-is-multiome" id="toc-what-is-multiome" class="nav-link" data-scroll-target="#what-is-multiome">What is multiome?</a></li>
+  <li><a href="#how-does-10x-multiome-chemistry-work" id="toc-how-does-10x-multiome-chemistry-work" class="nav-link" data-scroll-target="#how-does-10x-multiome-chemistry-work">How does 10X Multiome Chemistry work?</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">zebrafish-multiome-vignette</h1>
+<h1 class="title">Introduction</h1>
 </div>
 
 
@@ -136,9 +142,29 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<pre><code></code></pre>
+<section id="motivation" class="level2">
+<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
+<p>This vignette will cover the basics of preprocessing 10X single-cell multiome data for zebrafish (<em>Danio rerio</em>) with Lawson Lab annotations. Currently, the 10X Epi Multiome kit supports rodent (mouse/rat), human, non-human primate, plant, insect, and marine. However, processing requires additional steps when using a non-model organism, or an organism with custom genome annotations.</p>
+<p>Zebrafish are a powerful model organism for single cell studies as the embreyos develop externally, rapidly, and in large clutches which allows for the collection of tighly staged timepoints as well as the dissociation of entire embreyos rather than dissected tissues. While the organism itself contains a well-assembled reference genome, GRCz11, transcript annotation is uneven. Since the 10X Epi Multiome assay captures 3’ UTRs for gene expression, out-of-the-box gene annotation is tricky without a custom reference. The Lawson Lab annotation <a href="https://zfin.org/ZDB-PUB-200825-5">Lawson et al., 2020</a><sup>1,2</sup> extends 3’ UTRs and adds transcript models on top of GRCz11 to materially improve capture in 10X data.</p>
+<section id="what-is-multiome" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-multiome">What is multiome?</h3>
+<p>Multiome data refers to data which captures RNA transcript information (RNA-seq) and chromatin accessibility information (ATAC-seq) from the same single cell. These assays are primarily generated from 10X Genomics’ Chromium single cell multiome ATAC + Gene expression kits and BD Bioscience’s BD Rhapsody Multiomic ATAC-Seq assay. These vignettes assume data were generated using 10X chemistry.</p>
+<p>Sequencing cells for gene expression and another pool of cells for ATAC sequencing helps improve cell type classifications and resolution but comes at the limitation of being independent, unmatched pools of cells. Multiome assays get around this by profiling both modalities in the same single cell, allowing us to directly link regulatory states and gene expression. Gleaning information from both assays enables a more complete view of cellular states by linking what <em>can</em> happen (chromatin accessibility) with what <em>is</em> happening (gene expression). This linkage allows for more pointed questions that target causual and mechanistic insights into how the regulatory landscape influences gene expression to drive cellular state changes and dynamics.<sup>3</sup></p>
+</section>
+<section id="how-does-10x-multiome-chemistry-work" class="level3">
+<h3 class="anchored" data-anchor-id="how-does-10x-multiome-chemistry-work">How does 10X Multiome Chemistry work?</h3>
+<p>A wide range of sample types can serve as input for the 10X Epi Multiome assay. Broadly, the workflow starts with isolated nuclei which are tagmented with the Tn5 transposase (ATAC) in bulk to preferrentially cut nuclear DNA in regions of open chromatin. Transposed nuclei are partitioned into droplets (GEMs) with a single gel bead containing a unique 10X barcode. These unique barcodes are attached to available mRNA as well as transposed DNA fragments per single nucleus. Following incubation, GEMs are broken and pooled to facilitate amplification and library construction. Two aliquots are used: one for single-cell ATAC sequencing and one for single-cell GEX sequencing.<sup>4</sup></p>
+<p><strong>Sources:</strong></p>
+<ol type="1">
+<li><p><a href="https://zfin.org/ZDB-PUB-200825-5">Lawson, et al., 2020</a></p></li>
+<li><p><a href="https://www.umassmed.edu/lawson-lab/reagents/zebrafish-transcriptome/">Lawson Lab Zebrafish Annotations</a></p></li>
+<li><p><a href="https://mikemartinez99.github.io/posts/From-Snapshots-to-Motion-Multimodal-Velocity-Analysis-with-MultiVelo/">Mike Martinez Compute and Conquere</a></p></li>
+<li><p><a href="https://www.10xgenomics.com/blog/introducing-chromium-single-cell-multiome-atac-gene-expression">10X Genomics</a></p></li>
+</ol>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
