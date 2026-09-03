@@ -1,21 +1,38 @@
 project:
-  type: website
+  type: book
   output-dir: docs
 
-website:
-  title: "Introduction"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
+book:
+  title: "Multiome Preprocessing for Non-Model Organisms"
+  subtitle: "A zebrafish (*Danio rerio*) worked example"
+  author: "Mike Martinez"
+  date: today
+  repo-url: https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette
+  repo-actions: [edit, issue, source]
+  search: true
+  sidebar:
+    style: docked
+  chapters:
+    - index.qmd
+    - 01-introduction.qmd
+    - 02-preprocessing.qmd
 
 format:
   html:
     theme:
-      - cosmo
-      - brand
+      light: [litera, brand]
+      dark: [darkly, brand]
     css: styles.css
     toc: true
+    toc-depth: 3
+    code-copy: true
+    code-overflow: wrap
+    code-link: true
+    fig-align: center
+
+execute:
+  freeze: auto
+  echo: true
+  warning: false
 
 editor: visual
-

@@ -5,3 +5,8 @@
 
 /.quarto/
 **/*.quarto_ipynb
+
+# Quarto
+/_site/
+# NOTE: _freeze/ is intentionally NOT ignored - it must be committed
+# so CI can rebuild the book without re-running long chapters.

@@ -1,0 +1,29 @@
+---
+title: "Introduction"
+---
+
+## Motivation
+
+This vignette will cover the basics of preprocessing 10X single-cell multiome data for zebrafish (*Danio rerio*) with Lawson Lab annotations. Currently, the 10X Epi Multiome kit supports rodent (mouse/rat), human, non-human primate, plant, insect, and marine. However, processing requires additional steps when using a non-model organism, or an organism with custom genome annotations.
+
+Zebrafish are a powerful model organism for single cell studies as the embryos develop externally, rapidly, and in large clutches which allows for the collection of tightly staged timepoints as well as the dissociation of entire embryos rather than dissected tissues. While the organism itself contains a well-assembled reference genome, GRCz11, transcript annotation is uneven. Since the 10X Epi Multiome assay captures 3' UTRs for gene expression, out-of-the-box gene annotation is tricky without a custom reference. The Lawson Lab annotation [Lawson et al., 2020](https://zfin.org/ZDB-PUB-200825-5)<sup>1,2</sup> extends 3' UTRs and adds transcript models on top of GRCz11 to materially improve capture in 10X data.
+
+### What is multiome?
+
+Multiome data refers to data which captures RNA transcript information (RNA-seq) and chromatin accessibility information (ATAC-seq) from the same single cell. These assays are primarily generated from 10X Genomics' Chromium single cell multiome ATAC + Gene expression kits and BD Biosciences' BD Rhapsody Multiomic ATAC-Seq assay. These vignettes assume data were generated using 10X chemistry.
+
+Sequencing cells for gene expression and another pool of cells for ATAC sequencing helps improve cell type classifications and resolution but comes at the limitation of being independent, unmatched pools of cells. Multiome assays get around this by profiling both modalities in the same single cell, allowing us to directly link regulatory states and gene expression. Gleaning information from both assays enables a more complete view of cellular states by linking what *can* happen (chromatin accessibility) with what *is* happening (gene expression). This linkage allows for more pointed questions that target causal and mechanistic insights into how the regulatory landscape influences gene expression to drive cellular state changes and dynamics.<sup>3</sup>
+
+### How does 10X Multiome Chemistry work?
+
+A wide range of sample types can serve as input for the 10X Epi Multiome assay. Broadly, the workflow starts with isolated nuclei which are tagmented with the Tn5 transposase (ATAC) in bulk to preferentially cut nuclear DNA in regions of open chromatin. Transposed nuclei are partitioned into droplets (GEMs) with a single gel bead containing a unique 10X barcode. These unique barcodes are attached to available mRNA as well as transposed DNA fragments per single nucleus. Following incubation, GEMs are broken and pooled to facilitate amplification and library construction. Two aliquots are used: one for single-cell ATAC sequencing and one for single-cell GEX sequencing.<sup>4</sup>
+
+**Sources:**
+
+1.  [Lawson, et al., 2020](https://zfin.org/ZDB-PUB-200825-5)
+
+2.  [Lawson Lab Zebrafish Annotations](https://www.umassmed.edu/lawson-lab/reagents/zebrafish-transcriptome/)
+
+3.  [Mike Martinez Compute and Conquere](https://mikemartinez99.github.io/posts/From-Snapshots-to-Motion-Multimodal-Velocity-Analysis-with-MultiVelo/)
+
+4.  [10X Genomics](https://www.10xgenomics.com/blog/introducing-chromium-single-cell-multiome-atac-gene-expression)
