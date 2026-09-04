@@ -54,19 +54,24 @@ Often not. We need to have **coordinates** (meaning we need a GTF whose gene IDs
 
 The three-file version below is written against the standalone Lawson GTF because that is the more general situation, and because it makes the mapping between nomenclatures explicit. In this example, we have added 2 custom transgenes to the gtf which need to be accounted for.
 
-### Software
+## Software
 
-::: callout-important
-TODO: pin a reproducible environment. Options are a `renv.lock` committed alongside the book, a Conda environment YAML, or a container definition. Whichever is chosen, record the Bioconductor release as well as the package versions, since `rtracklayer` and `GenomicRanges` are versioned together.
-:::
+- `R` v4.4.1
+
+- `rtracklayer` v1.66.0 - available through Bioconductor
+
+- `GenomicRanges` v1.58.0 - available through Bioconductor
+
+- `genomicFeatures` v1.56.0 - available through Bioconductor
+
+- `dplyr` v1.1.4 - available through CRAN
 
 ```{r}
 #| label: libraries
-library(tidyverse)
+library(dplyr)
 library(GenomicRanges)
+library(GenomicFeatures)
 library(rtracklayer)
-
-set.seed(1234)
 ```
 
 ### Setting paths
