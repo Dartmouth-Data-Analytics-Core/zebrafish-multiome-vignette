@@ -22,7 +22,7 @@ What you need before you start
 ## Chapters
 
 1.  **Introduction**: the assay, why zebrafish poses a challenge, and how we get around this.
-2.  **Preprocessing**: Building the reference.
+2.  **Building GRanges Reference**: Building the reference.
 
 Additional chapters are in progress. Read in order; each assumes the decisions made before it.
 

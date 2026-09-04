@@ -15,7 +15,7 @@ book:
   chapters:
     - index.qmd
     - 01-introduction.qmd
-    - 02-preprocessing.qmd
+    - 02-Building-GRanges-Reference.qmd
 
 format:
   html:
