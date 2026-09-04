@@ -4,17 +4,17 @@
     "href": "index.html",
     "title": "Multiome Pre-processing for Zebrafish",
     "section": "",
-    "text": "0.1 Who this is for\nA practical, start-to-finish walkthrough of preprocessing 10X Chromium single-cell multiome data for zebrafish using the enhanced transcriptome annoations from the Lawson Lab.\nYou have multiome FASTQs from zebrafish, you want to run against a custom annotation (I.e., one or more custom genes included), and you need to get from raw reads to a joint object you can actually analyze.\nZebrafish (Danio rerio) is the worked example throughout, but the sticking points are general: building a reference from scratch, working around incomplete annotations, and leveraging both the gene expression and chromatin accessibility assays.\nWhat you need before you start",
+    "text": "0.1 Who this is for\nYou have multiome FASTQs from zebrafish, you want to run against a custom annotation (i.e., one or more custom genes included), and you need to get from raw reads to a joint object you can actually analyze.\nZebrafish (Danio rerio) is the worked example throughout, but the sticking points are general: building a reference from scratch, working around incomplete annotations, and leveraging both the gene expression and chromatin accessibility assays.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
     ]
   },
   {
-    "objectID": "index.html#who-this-is-for",
-    "href": "index.html#who-this-is-for",
+    "objectID": "index.html#what-you-need-before-you-start",
+    "href": "index.html#what-you-need-before-you-start",
     "title": "Multiome Pre-processing for Zebrafish",
-    "section": "",
-    "text": "Requirement\nNotes\n\n\n\n\nCell Ranger ARC\nRan by Genomic Shared Resources\n\n\nGenome FASTA\nGRCz11\n\n\nTranscript annotation\nLawson Lab GTF, built against a specific Ensembl release\n\n\nRaw data\nPaired GEX and ATAC FASTQs from the same library",
+    "section": "0.2 What you need before you start",
+    "text": "0.2 What you need before you start\n\n\n\n\n\n\n\nRequirement\nNotes\n\n\n\n\nCell Ranger ARC\nRan by Genomic Shared Resources\n\n\nGenome FASTA\nGRCz11\n\n\nTranscript annotation\nLawson Lab GTF, built against a specific Ensembl release\n\n\nRaw data\nPaired GEX and ATAC FASTQs from the same library",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
     ]
@@ -23,8 +23,8 @@
     "objectID": "index.html#chapters",
     "href": "index.html#chapters",
     "title": "Multiome Pre-processing for Zebrafish",
-    "section": "0.2 Chapters",
-    "text": "0.2 Chapters\n\nIntroduction: the assay, why zebrafish poses a challenge, and how we get around this.\nBuilding GRanges Reference: Building the reference.\n\nAdditional chapters are in progress. Read in order; each assumes the decisions made before it.",
+    "section": "0.3 Chapters",
+    "text": "0.3 Chapters\n\nIntroduction: the assay, why zebrafish poses a challenge, and how we get around this.\nBuilding GRanges Reference: Building the reference.\n\nAdditional chapters are in progress. Read in order; each assumes the decisions made before it.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
     ]
@@ -33,8 +33,8 @@
     "objectID": "index.html#conventions",
     "href": "index.html#conventions",
     "title": "Multiome Pre-processing for Zebrafish",
-    "section": "0.3 Conventions",
-    "text": "0.3 Conventions\n\n\n\n\n\n\nNote\n\n\n\nNotes flag context that is useful but not required to follow the steps.\n\n\n\n\n\n\n\n\nWarning\n\n\n\nWarnings flag the failure modes that produce plausible-looking but wrong output. These are the ones worth reading carefully.\n\n\nShell commands are shown in full with real paths from the worked example. Substitute your own rather than copying verbatim.\nMaintained by the Genomic Data Science Core (GDSC), Dartmouth.",
+    "section": "0.4 Conventions",
+    "text": "0.4 Conventions\n\n\n\n\n\n\nNote\n\n\n\nNotes flag context that is useful but not required to follow the steps.\n\n\n\n\n\n\n\n\nWarning\n\n\n\nWarnings flag the failure modes that produce plausible-looking but wrong output. These are the ones worth reading carefully.\n\n\nShell commands are shown in full with real paths from the worked example. Substitute your own rather than copying verbatim.\nMaintained by the Genomic Data Science Core (GDSC), Dartmouth.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
     ]

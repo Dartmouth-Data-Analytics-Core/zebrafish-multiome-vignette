@@ -1,0 +1,266 @@
+/*-- scss:defaults --*/
+
+// ---- Brand -----------------------------------------------------------------
+// Sampled from cqb_logo.jpg
+$cqb-green:  #05703C;
+$cqb-navy:   #003642;
+
+$primary:    $cqb-green;
+$secondary:  $cqb-navy;
+
+// ---- Typography ------------------------------------------------------------
+$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         Roboto, "Helvetica Neue", Arial, sans-serif !default;
+$font-family-monospace:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
+                         Consolas, monospace !default;
+
+$font-size-root:    17px;
+$line-height-base:  1.7;
+$headings-font-weight: 600;
+
+$h1-font-size: 2.05rem;
+$h2-font-size: 1.45rem;
+$h3-font-size: 1.15rem;
+$h4-font-size: 1rem;
+
+// ---- Shape -----------------------------------------------------------------
+$border-radius:    6px;
+$border-radius-sm: 4px;
+$table-border-width: 1px;
+
+// ---- Quarto ----------------------------------------------------------------
+$callout-border-width: 3px;
+$code-block-border-left: false;
+
+
+/*-- scss:rules --*/
+
+// ---- Tokens ----------------------------------------------------------------
+// Defined as custom properties so light and dark share one set of rules.
+:root {
+  --cqb-green:    #05703C;
+  --cqb-navy:     #003642;
+  --cqb-ink:      #17262B;
+  --cqb-muted:    #667C83;
+  --cqb-line:     #E5EAEB;
+  --cqb-surface:  #F6F9F9;
+  --cqb-bg:       #FFFFFF;
+  --cqb-accent:   #05703C;
+  --cqb-heading:  #003642;
+}
+
+body.quarto-dark {
+  --cqb-green:    #34B06B;
+  --cqb-navy:     #CFE0E4;
+  --cqb-ink:      #DCE5E7;
+  --cqb-muted:    #8DA3AA;
+  --cqb-line:     #22343A;
+  --cqb-surface:  #16262B;
+  --cqb-bg:       #0E1A1E;
+  --cqb-accent:   #34B06B;
+  --cqb-heading:  #EAF2F3;
+}
+
+// ---- Base ------------------------------------------------------------------
+body {
+  background-color: var(--cqb-bg);
+  color: var(--cqb-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+p { margin-bottom: 1.15rem; }
+
+// Comfortable measure. Long lines are the main reason a page reads as busy.
+main.content,
+#quarto-document-content { max-width: 46rem; }
+
+// ---- Headings --------------------------------------------------------------
+h1, h2, h3, h4, h5 {
+  color: var(--cqb-heading);
+  letter-spacing: -0.011em;
+  line-height: 1.3;
+}
+
+h1.title {
+  letter-spacing: -0.022em;
+  margin-bottom: 0.4rem;
+}
+
+.quarto-title .subtitle,
+p.subtitle {
+  color: var(--cqb-muted);
+  font-weight: 400;
+  font-size: 1.05rem;
+}
+
+h2 {
+  margin-top: 3.25rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--cqb-line);
+}
+
+h3 { margin-top: 2.4rem; margin-bottom: 0.7rem; }
+h4 { margin-top: 1.9rem; margin-bottom: 0.5rem; color: var(--cqb-muted); }
+
+// Chapter numbers should recede, not compete with the title.
+.chapter-number { color: var(--cqb-muted); font-weight: 500; }
+
+// ---- Links -----------------------------------------------------------------
+a { color: var(--cqb-accent); text-decoration: none; }
+a:hover { color: var(--cqb-accent); text-decoration: underline; text-underline-offset: 3px; }
+
+// ---- Sidebar ---------------------------------------------------------------
+// Flat, no panel chrome, generous line spacing.
+#quarto-sidebar {
+  background-color: var(--cqb-bg);
+  border-right: 1px solid var(--cqb-line);
+}
+
+#quarto-sidebar .sidebar-item { margin-bottom: 0.15rem; }
+
+#quarto-sidebar .sidebar-item-container .sidebar-item-text {
+  color: var(--cqb-muted);
+  font-size: 0.92rem;
+  padding: 0.3rem 0;
+  transition: color 0.12s ease;
+}
+
+#quarto-sidebar .sidebar-item-container .sidebar-item-text:hover { color: var(--cqb-ink); }
+
+#quarto-sidebar .sidebar-item-container .sidebar-item-text.active,
+#quarto-sidebar .sidebar-link.active {
+  color: var(--cqb-accent);
+  font-weight: 600;
+}
+
+.sidebar-title { font-weight: 600; letter-spacing: -0.01em; }
+.sidebar-logo,
+#quarto-sidebar .sidebar-logo img,
+.sidebar-header img {
+  max-width: 170px;
+  width: 100%;
+  height: auto;
+  margin: 0.35rem 0 1.1rem;
+}
+
+body.quarto-dark .sidebar-logo,
+body.quarto-dark #quarto-sidebar .sidebar-logo img,
+body.quarto-dark .sidebar-header img {
+  // Dark ink on transparent white; needs a plate to stay legible.
+  background: #FFFFFF;
+  border-radius: 6px;
+  padding: 9px 11px;
+}
+
+// ---- Table of contents -----------------------------------------------------
+#quarto-margin-sidebar .toc-active,
+nav#TOC .active { color: var(--cqb-accent) !important; font-weight: 500; }
+
+#toc-title { color: var(--cqb-ink); font-weight: 600; font-size: 0.85rem;
+             letter-spacing: 0.04em; text-transform: uppercase; }
+
+nav#TOC ul li a { color: var(--cqb-muted); font-size: 0.87rem; padding: 0.18rem 0; }
+nav#TOC ul li a:hover { color: var(--cqb-ink); text-decoration: none; }
+
+// ---- Code ------------------------------------------------------------------
+div.sourceCode {
+  background-color: var(--cqb-surface);
+  border: 1px solid var(--cqb-line);
+  border-radius: 6px;
+  margin: 1.4rem 0;
+}
+
+div.sourceCode pre.sourceCode {
+  padding: 0.95rem 1.05rem;
+  font-size: 0.855rem;
+  line-height: 1.6;
+  background-color: transparent;
+}
+
+code:not(.sourceCode) {
+  background-color: var(--cqb-surface);
+  color: var(--cqb-navy);
+  padding: 0.13em 0.36em;
+  border-radius: 4px;
+  font-size: 0.875em;
+}
+
+body.quarto-dark code:not(.sourceCode) { color: var(--cqb-green); }
+
+.code-copy-button { color: var(--cqb-muted); }
+
+// ---- Callouts --------------------------------------------------------------
+// Flat tint plus a single accent rule. No shadows, no heavy borders.
+.callout {
+  border: none;
+  border-left: 3px solid var(--cqb-line);
+  border-radius: 0 5px 5px 0;
+  background-color: var(--cqb-surface);
+  margin: 1.75rem 0;
+  box-shadow: none;
+}
+
+.callout .callout-body { padding: 0.35rem 0; }
+.callout .callout-body-container { padding: 0.4rem 1.1rem; }
+.callout .callout-title {
+  padding: 0.7rem 1.1rem 0.2rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background-color: transparent !important;
+  border-bottom: none;
+}
+.callout .callout-title p { margin-bottom: 0; font-weight: 600; }
+.callout.callout-titled .callout-body > :last-child { margin-bottom: 0.6rem; }
+
+.callout-note      { border-left-color: var(--cqb-green); }
+.callout-tip       { border-left-color: var(--cqb-green); }
+.callout-important { border-left-color: #B4531F; }
+.callout-warning   { border-left-color: #C08A1E; }
+.callout-caution   { border-left-color: #C08A1E; }
+
+// ---- Tables ----------------------------------------------------------------
+// Rules only, no zebra striping, room to breathe.
+table, .table {
+  border-collapse: collapse;
+  font-size: 0.93rem;
+  margin: 1.6rem 0;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.6rem 0.85rem;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.table > thead {
+  border-bottom: 1.5px solid var(--cqb-line);
+}
+
+.table > thead th {
+  color: var(--cqb-muted);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.table > tbody > tr { border-bottom: 1px solid var(--cqb-line); }
+.table > tbody > tr:last-child { border-bottom: none; }
+.table-striped > tbody > tr:nth-of-type(odd) > * { background-color: transparent; }
+
+// ---- Landing page ----------------------------------------------------------
+.lead {
+  font-size: 1.13rem;
+  line-height: 1.65;
+  color: var(--cqb-muted);
+  margin-bottom: 2.25rem;
+}
+
+// ---- Footer / misc ---------------------------------------------------------
+.nav-footer { border-top: 1px solid var(--cqb-line); color: var(--cqb-muted); font-size: 0.87rem; }
+hr { border-color: var(--cqb-line); opacity: 1; margin: 2.5rem 0; }
+blockquote { border-left: 3px solid var(--cqb-line); color: var(--cqb-muted); padding-left: 1.1rem; }
+figure { margin: 2rem 0; }
+figcaption { color: var(--cqb-muted); font-size: 0.86rem; }

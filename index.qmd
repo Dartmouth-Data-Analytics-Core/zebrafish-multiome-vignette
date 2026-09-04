@@ -2,15 +2,19 @@
 title: "Welcome"
 ---
 
-A practical, start-to-finish walkthrough of preprocessing 10X Chromium single-cell multiome data for zebrafish using the enhanced transcriptome annoations from the Lawson Lab.
+::: lead
+A practical, start-to-finish walkthrough of preprocessing 10X Chromium
+single-cell multiome data for zebrafish using the enhanced transcriptome
+annotations from the Lawson Lab.
+:::
 
 ## Who this is for
 
-You have multiome FASTQs from zebrafish, you want to run against a custom annotation (I.e., one or more custom genes included), and you need to get from raw reads to a joint object you can actually analyze.
+You have multiome FASTQs from zebrafish, you want to run against a custom annotation (i.e., one or more custom genes included), and you need to get from raw reads to a joint object you can actually analyze.
 
 Zebrafish (*Danio rerio*) is the worked example throughout, but the sticking points are general: building a reference from scratch, working around incomplete annotations, and leveraging both the gene expression and chromatin accessibility assays.
 
-What you need before you start
+## What you need before you start
 
 | Requirement | Notes |
 |------------------------------------|------------------------------------|

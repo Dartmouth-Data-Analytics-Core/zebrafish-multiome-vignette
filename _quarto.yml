@@ -11,7 +11,9 @@ book:
   repo-actions: [edit, issue, source]
   search: true
   sidebar:
-    style: docked
+    style: floating
+    logo: cqb_logo.jpg
+    collapse-level: 2
   chapters:
     - index.qmd
     - 01-introduction.qmd
@@ -20,15 +22,17 @@ book:
 format:
   html:
     theme:
-      light: [litera, brand]
-      dark: [darkly, brand]
+      light: [litera, cqb.scss]
+      dark: [darkly, cqb.scss]
     css: styles.css
     toc: true
     toc-depth: 3
+    toc-title: "On this page"
     code-copy: true
     code-overflow: wrap
     code-link: true
     fig-align: center
+    link-external-newwindow: true
 
 execute:
   freeze: auto
