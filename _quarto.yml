@@ -18,6 +18,7 @@ book:
     - index.qmd
     - 01-introduction.qmd
     - 02-Building-GRanges-Reference.qmd
+    - 03-RNA-preprocessing-and-QC.qmd
 
 format:
   html:

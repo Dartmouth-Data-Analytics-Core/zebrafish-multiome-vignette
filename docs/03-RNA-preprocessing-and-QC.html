@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.37">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-<meta name="author" content="Mike Martinez M.S.">
-<meta name="dcterms.date" content="2026-09-04">
-
-<title>Multiome Pre-processing for Zebrafish</title>
+<title>4&nbsp; 03-RNA-pre-procesing-and-QC – Multiome Pre-processing for Zebrafish</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,8 +20,42 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
-
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -35,7 +64,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./01-introduction.html" rel="next">
+<link href="./02-Building-GRanges-Reference.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -49,8 +78,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-069c9d7a43526e5b133891ada9cc8da8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark-fa8517e05c6710d37d6c1f534ad69ca7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-069c9d7a43526e5b133891ada9cc8da8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-069c9d7a43526e5b133891ada9cc8da8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -76,12 +104,8 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-
-
-<link rel="stylesheet" href="styles.css">
+}</script><link rel="stylesheet" href="styles.css">
 </head>
-
 <body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -247,30 +271,22 @@ ul.task-list li input[type="checkbox"] {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Welcome</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-RNA-preprocessing-and-QC.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">03-RNA-pre-procesing-and-QC</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
-      <img src="./cqb_logo.jpg" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
-      <img src="./cqb_logo.jpg" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
-      </a>
+      <img src="./cqb_logo.jpg" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./cqb_logo.jpg" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Multiome Pre-processing for Zebrafish</a> 
         <div class="sidebar-tools-main">
@@ -286,9 +302,9 @@ ul.task-list li input[type="checkbox"] {
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Welcome</span></span></a>
   </div>
 </li>
@@ -306,116 +322,46 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-RNA-preprocessing-and-QC.html" class="sidebar-item-text sidebar-link">
+  <a href="./03-RNA-preprocessing-and-QC.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">03-RNA-pre-procesing-and-QC</span></span></a>
   </div>
 </li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#who-this-is-for" id="toc-who-this-is-for" class="nav-link active" data-scroll-target="#who-this-is-for"><span class="header-section-number">0.1</span> Who this is for</a></li>
-  <li><a href="#what-you-need-before-you-start" id="toc-what-you-need-before-you-start" class="nav-link" data-scroll-target="#what-you-need-before-you-start"><span class="header-section-number">0.2</span> What you need before you start</a></li>
-  <li><a href="#chapters" id="toc-chapters" class="nav-link" data-scroll-target="#chapters"><span class="header-section-number">0.3</span> Chapters</a></li>
-  <li><a href="#conventions" id="toc-conventions" class="nav-link" data-scroll-target="#conventions"><span class="header-section-number">0.4</span> Conventions</a></li>
+<li><a href="#software" id="toc-software" class="nav-link active" data-scroll-target="#software"><span class="header-section-number">4.1</span> Software</a></li>
+  <li>
+<a href="#what-files-do-we-need" id="toc-what-files-do-we-need" class="nav-link" data-scroll-target="#what-files-do-we-need"><span class="header-section-number">4.2</span> What files do we need?</a>
+  <ul class="collapse">
+<li><a href="#reading-in-filtered-feature-barcode-matrices" id="toc-reading-in-filtered-feature-barcode-matrices" class="nav-link" data-scroll-target="#reading-in-filtered-feature-barcode-matrices"><span class="header-section-number">4.2.1</span> Reading in filtered feature barcode matrices</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/blob/main/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/edit/main/03-RNA-preprocessing-and-QC.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/blob/main/03-RNA-preprocessing-and-QC.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Multiome Pre-processing for Zebrafish</h1>
-<p class="subtitle lead">Dartmouth Genomic Data Science Core</p>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">03-RNA-pre-procesing-and-QC</span>
+</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Mike Martinez M.S. </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">September 4, 2026</p>
-    </div>
-  </div>
   
     
   </div>
   
 
 
-</header>
-
-
-<div class="lead">
-<p>A practical, start-to-finish walkthrough of preprocessing 10X Chromium single-cell multiome data for zebrafish using the enhanced transcriptome annotations from the Lawson Lab.</p>
-</div>
-<section id="who-this-is-for" class="level2" data-number="0.1">
-<h2 data-number="0.1" class="anchored" data-anchor-id="who-this-is-for"><span class="header-section-number">0.1</span> Who this is for</h2>
-<p>You have multiome FASTQs from zebrafish, you want to run against a custom annotation (i.e., one or more custom genes included), and you need to get from raw reads to a joint object you can actually analyze.</p>
-<p>This vignette will walk you through building a suitable <code>GRanges</code> reference for your ATAC modality, pre-processing and quality control of both the RNA and ATAC modalities, and the construction of a joint weighted-nearest-neighbor (WNN) embedding.</p>
-</section>
-<section id="what-you-need-before-you-start" class="level2" data-number="0.2">
-<h2 data-number="0.2" class="anchored" data-anchor-id="what-you-need-before-you-start"><span class="header-section-number">0.2</span> What you need before you start</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Requirement</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Cell Ranger ARC</td>
-<td>Ran by Genomic Shared Resources</td>
-</tr>
-<tr class="even">
-<td>Genome FASTA</td>
-<td>GRCz11</td>
-</tr>
-<tr class="odd">
-<td>Transcript annotation</td>
-<td>Lawson Lab GTF, built against a specific Ensembl release</td>
-</tr>
-<tr class="even">
-<td>Raw data</td>
-<td>Paired GEX and ATAC FASTQs from the same library</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="chapters" class="level2" data-number="0.3">
-<h2 data-number="0.3" class="anchored" data-anchor-id="chapters"><span class="header-section-number">0.3</span> Chapters</h2>
-<ol type="1">
-<li><strong>Introduction</strong></li>
-<li><strong>Building GRanges reference</strong></li>
-<li><strong>RNA pre-processing and QC</strong></li>
-</ol>
-<p>Additional chapters are in progress. Read in order; each assumes the decisions made before it.</p>
-</section>
-<section id="conventions" class="level2" data-number="0.4">
-<h2 data-number="0.4" class="anchored" data-anchor-id="conventions"><span class="header-section-number">0.4</span> Conventions</h2>
-<div class="callout callout-style-default callout-note callout-titled">
+</header><div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -425,30 +371,74 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Notes flag context that is useful but not required to follow the steps.</p>
+<p>Code in this chapter is shown but not executed. The steps depend on large reference files and cluster resources that are not available at render time. Paths are written generically; substitute your own.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<section id="software" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="software">
+<span class="header-section-number">4.1</span> Software</h2>
+</section><section id="what-files-do-we-need" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="what-files-do-we-need">
+<span class="header-section-number">4.2</span> What files do we need?</h2>
+<p>Gene expression counts live in the CellRanger output folder under the <code>outs</code> folder as <code>filtered_feature_bc_matrix.h5</code>. This is an HDF5 container that contains a sparse matrix and additional row/column information. Here, columns are cells and rows are features (genes). A sparse matrix means that only non-zero entries are stored which greatly reduces file size.</p>
+<p>CellRanger ARC internally calls cells by leveraging information from both modalities to determine which barcodes are valid nuclei. This is what the <code>filtered</code> portion of the file name implies. The counts represented within this file are UMI-deduplicated, confidently mapped, and collapsed to the gene level (for the GEX portion) against the GTF used. The alternative file, <code>raw_feature_bc_matrix.h5</code> instead contains every barcode which includes empty droplets carrying ambient RNA. This is useful for assessing a potential ambient RNA profile in your data, but it not a good starting point for gene expression analysis.</p>
+<p>Typically, a regular single-cell RNAseq experiment <code>filtered_feature_bc_matrix.h5</code>, only carries gene expression information, however for a Multiome experiment, it carries both the GEX and ATAC data. As such, we need to specify when reading in the files that we are interested in pulling the list element corresponding to gene expression.</p>
+<p>When we have multiple samples present, it is often helpful to define utility functions which we can use to map across our samples. This not only saves us time, but keeps our code files clean by avoiding redundant lines.</p>
+<section id="reading-in-filtered-feature-barcode-matrices" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="reading-in-filtered-feature-barcode-matrices">
+<span class="header-section-number">4.2.1</span> Reading in filtered feature barcode matrices</h3>
+<p>First, let’s define a function to read in the <code>filtered_feature_bc_matrix.h5</code> files. This function takes 2 arguments:</p>
+<ol type="1">
+<li><p><code>sampleDir</code>: a string ending in “/” pointing to the CellRanger output folder</p></li>
+<li><p><code>sample</code>: The name of the individual sample (i.e., a subdirectory of <code>sampleDir</code>)</p></li>
+</ol>
+<p>This function constructs the path to that sample’s filtered barcode matrix and creates a <code>Seurat</code> object using it’s <code>Gene Expression</code> element. Here, we hardode that we want to preliminarily filter the sample for <code>min.cells = 10</code> and <code>min.features = 100</code> (the former indicates that a feature must be present in at least 10 cells to be retained and the latter indicates that a cell must contain at least 100 features to be retained). By doing this, we preliminarily remove cells with very low genomic complexity.</p>
+<p>The function also calculates the percentage of mitochondrial features using zebrafish-specific mitochondrial prefixing (lower case “mt”) as well as other complexity metrics such as <code>log10GenesPerUMI</code> which is a complexity measure.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#----- Function to read in filtered feature barcode matrices</span></span>
+<span><span class="va">read_10x_multiGEX</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sampleDir</span>, <span class="va">sample</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Reading sample: "</span>, <span class="va">sample</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  </span>
+<span>  <span class="co">#----- CREATE SEURAT OBJECT</span></span>
+<span>  <span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu">Read10X_h5</span><span class="op">(</span>filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">sampleDir</span>, <span class="va">sample</span>, <span class="st">"/outs/filtered_feature_bc_matrix.h5"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">CreateSeuratObject</span><span class="op">(</span>counts <span class="op">=</span> <span class="va">counts</span><span class="op">$</span><span class="va">`Gene Expression`</span>,</span>
+<span>                          min.cells <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>                          min.features <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>                          assay <span class="op">=</span> <span class="st">"RNA"</span><span class="op">)</span></span>
+<span>  <span class="va">x</span><span class="op">$</span><span class="va">Ident</span> <span class="op">&lt;-</span> <span class="va">sample</span></span>
+<span>  <span class="co">#----- ADD PERCENT MITOCHONDRIAL GENES</span></span>
+<span>  <span class="va">x</span><span class="op">$</span><span class="va">percentMT</span> <span class="op">&lt;-</span> <span class="fu">PercentageFeatureSet</span><span class="op">(</span>object <span class="op">=</span> <span class="va">x</span>,</span>
+<span>                                         pattern <span class="op">=</span> <span class="st">"^mt-"</span><span class="op">)</span></span>
+<span>  <span class="va">x</span><span class="op">$</span><span class="va">log_nCount_RNA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">nCount_RNA</span><span class="op">)</span></span>
+<span>  <span class="va">x</span><span class="op">$</span><span class="va">log_nFeature_RNA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">nFeature_RNA</span><span class="op">)</span></span>
+<span>  <span class="co">#----- ADD LIBRARY COMPLEXITY METRIC</span></span>
+<span>  <span class="va">x</span><span class="op">$</span><span class="va">log10GenesPerUMI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">nFeature_RNA</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">nCount_RNA</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="callout-title-container flex-fill">
-Warning
+<p>Given a vector of sample names (corresponding to how our CellRanger output folder subdirectories are named), we can map this function using <code>purrr</code> which will return a list of <code>Seurat</code> objects.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#----- Set working directory and sample directory</span></span>
+<span><span class="va">wd</span> <span class="op">&lt;-</span> <span class="st">"/Volumes/GMBSR_bioinfo/Labs/kasper/250613_10x_multiome_redo/"</span></span>
+<span><span class="va">sampleDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">wd</span>, <span class="st">"raw_data/"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#----- Vector of samples</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"12hpf"</span>, <span class="st">"14hpf"</span>, <span class="st">"18hpf"</span>, <span class="st">"22hpf"</span>, <span class="st">"26hpf"</span>, <span class="st">"30hpf"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span>, <span class="st">"4"</span>, <span class="st">"5"</span>, <span class="st">"6"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#----- Read in files</span></span>
+<span><span class="va">seurat_list</span> <span class="op">&lt;-</span> <span class="fu">map</span><span class="op">(</span><span class="va">samples</span>, <span class="op">~</span> <span class="fu">read_10x_multiGEX</span><span class="op">(</span><span class="va">sampleDir</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">seurat_list</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">samples</span></span>
+<span></span>
+<span><span class="co">#----- Get combined metadata across all samples</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">seurat_list</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">seurat_list</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">orig.ident</span> <span class="op">&lt;-</span> <span class="va">idents</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">metadata</span>, <span class="va">seurat_list</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">meta.data</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Warnings flag the failure modes that produce plausible-looking but wrong output. These are the ones worth reading carefully.</p>
-</div>
-</div>
-<p>Shell commands are shown in full with real paths from the worked example. Substitute your own rather than copying verbatim.</p>
-<p>Maintained by the Genomic Data Science Core (GDSC), Dartmouth.</p>
 
 
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -865,19 +855,16 @@ Warning
       }
     }
   });
-  </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./02-Building-GRanges-Reference.html" class="pagination-link" aria-label="Building a GRanges Reference Object">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Building a GRanges Reference Object</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./01-introduction.html" class="pagination-link" aria-label="Introduction">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
 
 
 
-
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/blob/main/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/edit/main/03-RNA-preprocessing-and-QC.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette/blob/main/03-RNA-preprocessing-and-QC.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>

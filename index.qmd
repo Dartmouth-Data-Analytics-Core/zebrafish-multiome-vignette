@@ -3,16 +3,14 @@ title: "Welcome"
 ---
 
 ::: lead
-A practical, start-to-finish walkthrough of preprocessing 10X Chromium
-single-cell multiome data for zebrafish using the enhanced transcriptome
-annotations from the Lawson Lab.
+A practical, start-to-finish walkthrough of preprocessing 10X Chromium single-cell multiome data for zebrafish using the enhanced transcriptome annotations from the Lawson Lab.
 :::
 
 ## Who this is for
 
 You have multiome FASTQs from zebrafish, you want to run against a custom annotation (i.e., one or more custom genes included), and you need to get from raw reads to a joint object you can actually analyze.
 
-Zebrafish (*Danio rerio*) is the worked example throughout, but the sticking points are general: building a reference from scratch, working around incomplete annotations, and leveraging both the gene expression and chromatin accessibility assays.
+This vignette will walk you through building a suitable `GRanges` reference for your ATAC modality, pre-processing and quality control of both the RNA and ATAC modalities, and the construction of a joint weighted-nearest-neighbor (WNN) embedding.
 
 ## What you need before you start
 
@@ -25,8 +23,9 @@ Zebrafish (*Danio rerio*) is the worked example throughout, but the sticking poi
 
 ## Chapters
 
-1.  **Introduction**: the assay, why zebrafish poses a challenge, and how we get around this.
-2.  **Building GRanges Reference**: Building the reference.
+1.  **Introduction**
+2.  **Building GRanges reference**
+3.  **RNA pre-processing and QC**
 
 Additional chapters are in progress. Read in order; each assumes the decisions made before it.
 
