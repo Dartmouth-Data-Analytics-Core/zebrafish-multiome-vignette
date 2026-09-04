@@ -3,9 +3,9 @@ project:
   output-dir: docs
 
 book:
-  title: "Multiome Preprocessing for Non-Model Organisms"
-  subtitle: "A zebrafish (*Danio rerio*) worked example"
-  author: "Mike Martinez"
+  title: "Multiome Pre-processing for Zebrafish"
+  subtitle: "Dartmouth Genomic Data Science Core"
+  author: "Mike Martinez M.S."
   date: today
   repo-url: https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette
   repo-actions: [edit, issue, source]
