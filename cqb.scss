@@ -155,13 +155,46 @@ body.quarto-dark .sidebar-header img {
 }
 
 // ---- Table of contents -----------------------------------------------------
+// Push the whole column away from the body text. Without this the TOC reads
+// as a second column of the article rather than as marginal navigation.
+#quarto-margin-sidebar {
+  padding-left: 2.25rem;
+}
+
 #quarto-margin-sidebar .toc-active,
 nav#TOC .active { color: var(--cqb-accent) !important; font-weight: 500; }
 
-#toc-title { color: var(--cqb-ink); font-weight: 600; font-size: 0.85rem;
-             letter-spacing: 0.04em; text-transform: uppercase; }
+#toc-title {
+  color: var(--cqb-ink);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.9rem;
+}
 
-nav#TOC ul li a { color: var(--cqb-muted); font-size: 0.87rem; padding: 0.18rem 0; }
+nav#TOC ul {
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+nav#TOC ul ul {
+  padding-left: 0.85rem;
+  margin-top: 0.35rem;
+}
+
+nav#TOC ul li {
+  margin-bottom: 0.35rem;
+  line-height: 1.45;
+}
+
+nav#TOC ul li a {
+  color: var(--cqb-muted);
+  font-size: 0.87rem;
+  padding: 0.2rem 0;
+  display: block;
+}
+
 nav#TOC ul li a:hover { color: var(--cqb-ink); text-decoration: none; }
 
 // ---- Code ------------------------------------------------------------------
