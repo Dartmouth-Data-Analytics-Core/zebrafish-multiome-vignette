@@ -1,0 +1,82 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Multiome Pre-processing for Zebrafish",
+    "section": "",
+    "text": "0.1 Who this is for\nA practical, start-to-finish walkthrough of preprocessing 10X Chromium single-cell multiome data for zebrafish using the enhanced transcriptome annoations from the Lawson Lab.\nYou have multiome FASTQs from zebrafish, you want to run against a custom annotation (I.e., one or more custom genes included), and you need to get from raw reads to a joint object you can actually analyze.\nZebrafish (Danio rerio) is the worked example throughout, but the sticking points are general: building a reference from scratch, working around incomplete annotations, and leveraging both the gene expression and chromatin accessibility assays.\nWhat you need before you start",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#who-this-is-for",
+    "href": "index.html#who-this-is-for",
+    "title": "Multiome Pre-processing for Zebrafish",
+    "section": "",
+    "text": "Requirement\nNotes\n\n\n\n\nCell Ranger ARC\nRan by Genomic Shared Resources\n\n\nGenome FASTA\nGRCz11\n\n\nTranscript annotation\nLawson Lab GTF, built against a specific Ensembl release\n\n\nRaw data\nPaired GEX and ATAC FASTQs from the same library",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#chapters",
+    "href": "index.html#chapters",
+    "title": "Multiome Pre-processing for Zebrafish",
+    "section": "0.2 Chapters",
+    "text": "0.2 Chapters\n\nIntroduction: the assay, why zebrafish poses a challenge, and how we get around this.\nBuilding GRanges Reference: Building the reference.\n\nAdditional chapters are in progress. Read in order; each assumes the decisions made before it.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#conventions",
+    "href": "index.html#conventions",
+    "title": "Multiome Pre-processing for Zebrafish",
+    "section": "0.3 Conventions",
+    "text": "0.3 Conventions\n\n\n\n\n\n\nNote\n\n\n\nNotes flag context that is useful but not required to follow the steps.\n\n\n\n\n\n\n\n\nWarning\n\n\n\nWarnings flag the failure modes that produce plausible-looking but wrong output. These are the ones worth reading carefully.\n\n\nShell commands are shown in full with real paths from the worked example. Substitute your own rather than copying verbatim.\nMaintained by the Genomic Data Science Core (GDSC), Dartmouth.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
+    ]
+  },
+  {
+    "objectID": "01-introduction.html",
+    "href": "01-introduction.html",
+    "title": "2  Introduction",
+    "section": "",
+    "text": "2.1 Motivation\nThis vignette will cover the basics of preprocessing 10X single-cell multiome data for zebrafish (Danio rerio) with Lawson Lab annotations. Currently, the 10X Epi Multiome kit supports rodent (mouse/rat), human, non-human primate, plant, insect, and marine organisms. However, processing requires additional steps when using a non-model organism, or an organism with custom genome annotations.\nZebrafish are a powerful model organism for single-cell studies as the embryos develop externally, rapidly, and in large clutches which allows for the collection of tightly staged timepoints as well as the dissociation of entire embryos rather than dissected tissues. While the organism itself contains a well-assembled reference genome, GRCz11, transcript annotation is uneven. Since the 10X Epi Multiome assay captures 3’ UTRs for gene expression, out-of-the-box gene annotation is tricky without a custom reference. The Lawson Lab annotation Lawson et al., 20201,2 extends 3’ UTRs and adds transcript models on top of GRCz11 to materially improve capture in 10X data.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "01-introduction.html#motivation",
+    "href": "01-introduction.html#motivation",
+    "title": "2  Introduction",
+    "section": "",
+    "text": "2.1.1 What is multiome?\nMultiome data refers to data which captures RNA transcript information (RNA-seq) and chromatin accessibility information (ATAC-seq) from the same single cell. These assays are primarily generated from 10X Genomics’ Chromium single cell multiome ATAC + Gene expression kits and BD Biosciences’ BD Rhapsody ATAC-Seq assay. These vignettes assume data were generated using 10X chemistry.\nSequencing one pool of cells for gene expression and a separate pool for ATAC helps improve cell type classification and resolution, but the two pools are independent and unmatched. Multiome assays get around this by profiling both modalities in the same single cell, allowing us to directly link regulatory states and gene expression. Gleaning information from both assays enables a more complete view of cellular states by linking what can happen (chromatin accessibility) with what is happening (gene expression). This linkage allows for more pointed questions that target causal and mechanistic insights into how the regulatory landscape influences gene expression to drive cellular state changes and dynamics.3\n\n\n2.1.2 How does 10X Multiome Chemistry work?\nA wide range of sample types can serve as input for the 10X Epi Multiome assay. Broadly, the workflow starts with isolated nuclei which are tagmented with the Tn5 transposase (ATAC) in bulk to preferentially cut nuclear DNA in regions of open chromatin. Transposed nuclei are partitioned into droplets (GEMs) with a single gel bead containing a unique 10X barcode. These unique barcodes are attached to available mRNA as well as transposed DNA fragments per single nucleus. Following incubation, GEMs are broken and pooled to facilitate amplification and library construction. Two aliquots are used: one for single-cell ATAC sequencing and one for single-cell GEX sequencing.4\nFor a detailed explanation of adapter/primer sequences and step-by-step library generation, see Teich Lab Single Cell Library Layouts 5\nSources:\n\nLawson et al., 2020\nLawson Lab Zebrafish Annotations\nMike Martinez Compute and Conquer\n10X Genomics\nTeich Lab Single Cell Library Layouts",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "02-Building-GRanges-Reference.html",
+    "href": "02-Building-GRanges-Reference.html",
+    "title": "\n3  Building a GRanges Reference Object\n",
+    "section": "",
+    "text": "3.1 Building a Reference Object\nDownstream ATAC processing through Signac requires specific annotations in the form of a GRanges object carrying gene coordinates, IDs, and a gene_biotype column. The Lawson Lab annotations use in-house nomenclature, which is why 3 separate GTF files are used: one which carries the coordinates and features (what you used in the CellRanger ARC pipeline), one which serves as a map between Lawson nomenclature and Ensembl nomenclature, and one native GRCz11 gtf which contains crucial biotype information. We use these 3 files together to collate all the necessary information per gene to build a master GRanges object.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Building a GRanges Reference Object</span>"
+    ]
+  },
+  {
+    "objectID": "02-Building-GRanges-Reference.html#building-a-reference-object",
+    "href": "02-Building-GRanges-Reference.html#building-a-reference-object",
+    "title": "\n3  Building a GRanges Reference Object\n",
+    "section": "",
+    "text": "3.1.1 What is a GRanges object and why do we need one?\nA GRanges object is Bioconductor’s container for genomic intervals. Each element in a GRanges object contains at minimum a sequence name, the start and end coordinates, the strand, and abritrary metadata columns. The reason this matters more for the ATAC modality is based in the nature of the assay. Gene expression is a relatively simple gene-by-cell matrix and values represent counts for that gene in that cell. ATAC data instead outputs fragments which are essentially millions of genomic intervals with no feature label attached. In order to assign our peaks to genomic features such as genes and promoters, we need to provide annotations that inform where genes are. Signac (the package used for the ATAC modality), internally uses GRanges for various downstream pre-processing functions and as such, this is a crucial and non-negotiable step.\n\n\n\n\n\n\nNoteThe worked example\n\n\n\nThe Cell Ranger run this chapter follows was annotated against the reference at:\n/dartfs-hpc/rc/lab/G/GSR_Active/scripts/refs/Danio_rerio/Lawson/GRCz11_lawson\nwhich was built from:\n/dartfs-hpc/rc/lab/G/GSR_Active/scripts/refs/Danio_rerio/Lawson/5b_V4.3.2finalFixChrOnly.gtf\nrenamed to lawson_zebrafish.gtf for readability. Two things are worth reading off that filename. It is a V4.3.2 derivative, so it shares lineage with the dictionary file below. And FixChrOnly means it is restricted to assembled chromosomes and uses chr-prefixed sequence names, which matters in the final step.\n\n\n\n3.1.2 What you need\n\n\nlawson_zebrafish.gtf: This is the file you used to run CellRanger mkref. This contains the coordinates and features (i.e., the gene IDs appearing in the counts matrix), along with any custom gene annotations.\n\nV4.3.2.validated.gtf: Another Lawson Lab file containing both Lawson gene IDs and Ensembl transcript IDs in the same row. This file serves as a dictionary for mapping between Lawson nomenclature and Ensembl nomenclature.\n\nDanio_rerio.GRCz11.113.gtf: This file carries gene biotype information, which will be required downstream for ATAC pre-processing functionality in Signac.\n\n\n\n\n\n\n\nWarning\n\n\n\nFile 1 must be the same GTF that was passed to cellranger-arc mkref. If it is not, the gene IDs in the annotation object will not match the features in the counts matrix.\n\n\n\n3.1.3 Do you actually need all three?\nOften not. We need to have coordinates (meaning we need a GTF whose gene IDs match your counts matrix), and biotypes, which only Ensembl supplies. The dictionary file is needed solely when the coordinate GTF does not already carry Ensembl transcript IDs.\nThe three-file version below is written against the standalone Lawson GTF because that is the more general situation, and because it makes the mapping between nomenclatures explicit. In this example, we have added 2 custom transgenes to the gtf which need to be accounted for.\n\n3.1.4 Software\n\n\n\n\n\n\nImportant\n\n\n\nTODO: pin a reproducible environment. Options are a renv.lock committed alongside the book, a Conda environment YAML, or a container definition. Whichever is chosen, record the Bioconductor release as well as the package versions, since rtracklayer and GenomicRanges are versioned together.\n\n\n\nlibrary(tidyverse)\nlibrary(GenomicRanges)\nlibrary(rtracklayer)\n\nset.seed(1234)\n\n\n3.1.5 Setting paths\n\n#----- Set paths\nwd &lt;- \"/Volumes/GMBSR_bioinfo/Labs/kasper/250613_10x_multiome_redo/\"\nfiles &lt;- paste0(wd, \"files/\")\nfilesDir &lt;- paste0(files, \"lawson_db_info/\")\n\n#----- Create directories\ncreate &lt;- c(files, filesDir, paste0(filesDir, \"Database_Info/\"))\nfor (i in create) {\n  if (!dir.exists(i)) {\n    dir.create(i)\n  }\n}\n\n\nlawsonGTFpath &lt;- paste0(filesDir, \"GTFs/lawson_zebrafish.gtf\") # Lawson\nllV4path &lt;- paste0(filesDir, \"GTFs/V4.3.2.validated.gtf\") # Lawson-Ensembl TXIDs\nGRCz11path &lt;- paste0(filesDir, \"GTFs/Danio_rerio.GRCz11.113.gtf\") # Ensembl\n\n\n3.1.6 Reading in the GTF files as GRanges Objects\nrtracklayer::import() parses the GTF into a GRanges object. The metadata columns are pulled out into a plain data frame so they can be joined against the other two annotations. We can read in all three GTFs in the same way.\n\n#----- Read in the lawson annotations\nannotations &lt;- rtracklayer::import(lawsonGTFpath)\n\n#----- Extract metadata\nannoData &lt;- as.data.frame(mcols(annotations))\n\nNow, we read in the second Lawson Lab file which contains the mapping info. The only difference here is that we subset to just transcript rows since we are interested in linking gene IDs to Ensembl transcript IDs. By doing this, every transcript with at least one exon is represented.\n\n#----- This reference will map all Lawson annotations to Ensembl TXID counterparts\nll &lt;- rtracklayer::import(llV4path, format = \"gtf\")\nllmeta &lt;- as.data.frame(mcols(ll)) %&gt;%\n  distinct()\nllmeta &lt;- llmeta[llmeta$type == \"transcript\",]\n\nNext, we read in the GRCz11 Ensembl annotations the same way.\n\n#----- Read in the Zebrafish reference gtf from Ensembl\ngrcz11gtf &lt;- rtracklayer::import(GRCz11path, format = \"gtf\")\n\n\n3.1.7 Link metadata\nEnsembl supplies the protein-coding transcript IDs. Those are matched into the Lawson-Ensembl map to find which Lawson gene IDs they belong to, and those gene IDs are labeled protein_coding. Everything else becomes Other.\n\n#----- Extract gene biotype and ID information\nensemblMetadata &lt;- as.data.frame(mcols(grcz11gtf)) %&gt;%\n  distinct()\nensMeta &lt;- ensemblMetadata[ensemblMetadata$type == \"transcript\",]\n\n#----- Get just the protein coding genes\npcode &lt;- ensMeta[ensMeta$gene_biotype == \"protein_coding\",]\ntxs &lt;- pcode$transcript_id\n\n#----- Filter llmeta to just include those transcripts\nllsubset &lt;- llmeta[llmeta$transcript_id %in% txs,]\nllsubset$gene_biotype &lt;- \"protein_coding\"\n\n#----- Merge\nmerged &lt;- annoData %&gt;%\n  left_join(llsubset[,c(\"gene_id\", \"gene_biotype\")], by = \"gene_id\", relationship = \"many-to-many\")\nmerged$gene_biotype.x &lt;- NULL\n\n#----- Rename the column to gene_biotype\ncolnames(merged)[6] &lt;- c(\"gene_biotype\")\n\n#----- Set NA to other\nmerged$gene_biotype[is.na(merged$gene_biotype)] &lt;- \"Other\"\nfileName &lt;- paste0(filesDir, \"Protein_Coding_Genes.csv\")\nwrite.csv(merged, fileName)\n\n\n3.1.8 Reconstruct GRanges object\nThe coordinates are read back from the GTF with read.table() and bound to the metadata, then the biotype column is joined on and the whole thing is rebuilt as a GRanges.\n\n#----- Read in the original gtf file\ngtf &lt;- read.table(lawsonGTFpath, sep = \"\\t\")\n\n#----- Extract GRanges information\ngtf &lt;- gtf[,1:8]\n\n#----- Combine the Granges information and the original metadata\nfull &lt;- cbind(gtf, annoData)\n\n#----- Merge\nfinal &lt;- full %&gt;%\n  left_join(merged[,c(\"gene_id\", \"gene_biotype\")], by = \"gene_id\", relationship = \"many-to-many\") %&gt;%\n  distinct()\nfinal$gene_biotype.x &lt;- NULL\ncolnames(final)[14] &lt;- c(\"gene_biotype\")\n\n#----- Change the custom annotations for the project to protein coding\nfinal$gene_biotype[final$gene_id %in% c(\"EGFP\", \"Kalta4\")] &lt;- c(\"protein_coding\")\n\n#----- Save as a csv\ndbFile &lt;- paste0(filesDir, \"Database_Info/Lawson_Reference_GRanges_Meta_with_GeneBiotypes.csv\")\nwrite.csv(final, file = dbFile)\n\n#----- Convert back to a GRanges object\ngr &lt;- GRanges(\n  seqnames = final$V1,\n  ranges = IRanges(start = final$V4, end = final$V5),\n  strand = final$V7,\n  gene_id = final$gene_id,\n  gene_name = final$gene_name,\n  transcript_id = final$transcript_id,\n  gene_biotype = final$gene_biotype,\n  type = final$type\n)\n\n#----- Save granges object as an rds\nrdsFile &lt;- paste0(filesDir, \"Lawson_Reference_GenomicRanges_with_GeneBiotype.Rds\")\nsaveRDS(gr, file = rdsFile)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Building a GRanges Reference Object</span>"
+    ]
+  }
+]
