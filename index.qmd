@@ -2,46 +2,29 @@
 title: "Welcome"
 ---
 
-A practical, start-to-finish walkthrough of preprocessing 10X Chromium
-single-cell multiome data when your organism is not one of the two that
-10X ships a prebuilt reference for.
+A practical, start-to-finish walkthrough of preprocessing 10X Chromium single-cell multiome data for zebrafish using the enhanced transcriptome annoations from the Lawson Lab.
 
 ## Who this is for
 
-You have multiome FASTQs from a non-model organism, or from a model
-organism you want to run against a custom annotation, and you need to get
-from raw reads to a joint object you can actually analyze. You are
-comfortable on a command line and on a compute cluster. You do not need
-prior experience with ATAC data.
+You have multiome FASTQs from zebrafish, you want to run against a custom annotation (I.e., one or more custom genes included), and you need to get from raw reads to a joint object you can actually analyze.
 
-Zebrafish (*Danio rerio*) is the worked example throughout, but the
-sticking points are general: building a reference from scratch, working
-around incomplete annotation, and validating that the reference you built
-is behaving before you spend cluster hours on it.
+Zebrafish (*Danio rerio*) is the worked example throughout, but the sticking points are general: building a reference from scratch, working around incomplete annotations, and leveraging both the gene expression and chromatin accessibility assays.
 
-## What you need before you start
+What you need before you start
 
 | Requirement | Notes |
-|-------------|-------------------------------------------------|
-| Cell Ranger ARC | Version pinned in each chapter |
-| Genome FASTA | GRCz11 for the worked example; pin the release |
+|------------------------------------|------------------------------------|
+| Cell Ranger ARC | Ran by Genomic Shared Resources |
+| Genome FASTA | GRCz11 |
 | Transcript annotation | Lawson Lab GTF, built against a specific Ensembl release |
-| Compute | `mkref` and `count` are memory-hungry; per-step figures are given where relevant |
 | Raw data | Paired GEX and ATAC FASTQs from the same library |
-
-Mixing an annotation built against one Ensembl release with a FASTA from
-another is a silent failure mode rather than an error. Chapter 1 covers
-how to check.
 
 ## Chapters
 
-1.  **Introduction** — the assay, why non-model organisms are harder, and
-    what specifically goes wrong with zebrafish annotation.
-2.  **Preprocessing** — building the reference and running Cell Ranger
-    ARC.
+1.  **Introduction**: the assay, why zebrafish poses a challenge, and how we get around this.
+2.  **Preprocessing**: Building the reference.
 
-Additional chapters are in progress. Read in order; each assumes the
-decisions made before it.
+Additional chapters are in progress. Read in order; each assumes the decisions made before it.
 
 ## Conventions
 
@@ -50,22 +33,9 @@ Notes flag context that is useful but not required to follow the steps.
 :::
 
 ::: callout-warning
-Warnings flag the failure modes that produce plausible-looking but wrong
-output. These are the ones worth reading carefully.
+Warnings flag the failure modes that produce plausible-looking but wrong output. These are the ones worth reading carefully.
 :::
 
-Shell commands are shown in full with real paths from the worked example.
-Substitute your own rather than copying verbatim.
-
-## Reproducibility and feedback
-
-Chapters containing long-running steps are cached with Quarto's `freeze`,
-so rebuilding the site does not re-execute Cell Ranger. Software versions
-are stated per chapter.
-
-Corrections and questions are welcome as issues on the
-[source repository](https://github.com/Dartmouth-Data-Analytics-Core/zebrafish-multiome-vignette).
-
-------------------------------------------------------------------------
+Shell commands are shown in full with real paths from the worked example. Substitute your own rather than copying verbatim.
 
 Maintained by the Genomic Data Science Core (GDSC), Dartmouth.

@@ -18,6 +18,8 @@ Sequencing one pool of cells for gene expression and a separate pool for ATAC he
 
 A wide range of sample types can serve as input for the 10X Epi Multiome assay. Broadly, the workflow starts with isolated nuclei which are tagmented with the Tn5 transposase (ATAC) in bulk to preferentially cut nuclear DNA in regions of open chromatin. Transposed nuclei are partitioned into droplets (GEMs) with a single gel bead containing a unique 10X barcode. These unique barcodes are attached to available mRNA as well as transposed DNA fragments per single nucleus. Following incubation, GEMs are broken and pooled to facilitate amplification and library construction. Two aliquots are used: one for single-cell ATAC sequencing and one for single-cell GEX sequencing.<sup>4</sup>
 
+For a detailed explanation of adapter/primer sequences and step-by-step library generation, see [Teich Lab Single Cell Library Layouts](https://teichlab.github.io/scg_lib_structs/methods_html/10xChromium_multiome.html) <sup>5</sup>
+
 **Sources:**
 
 1.  [Lawson et al., 2020](https://zfin.org/ZDB-PUB-200825-5)
@@ -27,3 +29,5 @@ A wide range of sample types can serve as input for the 10X Epi Multiome assay. 
 3.  [Mike Martinez Compute and Conquer](https://mikemartinez99.github.io/posts/From-Snapshots-to-Motion-Multimodal-Velocity-Analysis-with-MultiVelo/)
 
 4.  [10X Genomics](https://www.10xgenomics.com/blog/introducing-chromium-single-cell-multiome-atac-gene-expression)
+
+5.  [Teich Lab Single Cell Library Layouts](https://teichlab.github.io/scg_lib_structs/methods_html/10xChromium_multiome.html)
