@@ -14,17 +14,45 @@ Code in this chapter is shown but not executed. The steps depend on large refere
 
 ## Building a Reference Object
 
-Downstream ATAC processing through `Signac` requires specific annotations in the form of a `GRanges` object carrying gene coordinates, IDs, and a `gene_biotype` column, which drives gene activity scoring and coverage plotting. The Lawson Lab annotations use in-house Lawson nomenclature, which is why 3 separate GTF files are required: one which carries the coordinates and features (shared with the features in your counts matrix), one which serves as a map between Lawson nomenclature and Ensembl nomenclature, and one native GRCz11 gtf which contains crucial biotype information. We use these 3 files together to collate all the necessary information per gene to build a master GRanges object.
+Downstream ATAC processing through `Signac` requires specific annotations in the form of a `GRanges` object carrying gene coordinates, IDs, and a `gene_biotype` column. The Lawson Lab annotations use in-house nomenclature, which is why 3 separate GTF files are used: one which carries the coordinates and features (what you used in the CellRanger ARC pipeline), one which serves as a map between Lawson nomenclature and Ensembl nomenclature, and one native GRCz11 gtf which contains crucial biotype information. We use these 3 files together to collate all the necessary information per gene to build a master `GRanges` object.
+
+### What is a GRanges object and why do we need one?
+
+A `GRanges` object is Bioconductor's container for genomic intervals. Each element in a `GRanges` object contains at minimum a sequence name, the start and end coordinates, the strand, and abritrary metadata columns. The reason this matters more for the ATAC modality is based in the nature of the assay. Gene expression is a relatively simple gene-by-cell matrix and values represent counts for that gene in that cell. ATAC data instead outputs fragments which are essentially millions of genomic intervals with no feature label attached. In order to assign our peaks to genomic features such as genes and promoters, we need to provide annotations that inform *where* genes are. `Signac` (the package used for the ATAC modality), internally uses `GRanges` for various downstream pre-processing functions and as such, this is a crucial and non-negotiable step.
+
+::: callout-note
+## The worked example
+
+The Cell Ranger run this chapter follows was annotated against the reference at:
+
+```         
+/dartfs-hpc/rc/lab/G/GSR_Active/scripts/refs/Danio_rerio/Lawson/GRCz11_lawson
+```
+
+which was built from:
+
+```         
+/dartfs-hpc/rc/lab/G/GSR_Active/scripts/refs/Danio_rerio/Lawson/5b_V4.3.2finalFixChrOnly.gtf
+```
+
+renamed to `lawson_zebrafish.gtf` for readability. Two things are worth reading off that filename. It is a V4.3.2 derivative, so it shares lineage with the dictionary file below. And `FixChrOnly` means it is restricted to assembled chromosomes and uses `chr`-prefixed sequence names, which matters in the final step.
+:::
 
 ### What you need
 
-1.  `lawson_zebrafish.gtf`: Contains the coordinates and features (i.e., the gene IDs appearing in the counts matrix).
+1.  `lawson_zebrafish.gtf`: This is the file you used to run `CellRanger mkref`. This contains the coordinates and features (i.e., the gene IDs appearing in the counts matrix), along with any custom gene annotations.
 2.  `V4.3.2.validated.gtf`: Another Lawson Lab file containing *both* Lawson gene IDs and Ensembl transcript IDs in the same row. This file serves as a dictionary for mapping between Lawson nomenclature and Ensembl nomenclature.
 3.  `Danio_rerio.GRCz11.113.gtf`: This file carries gene biotype information, which will be required downstream for ATAC pre-processing functionality in `Signac`.
 
 ::: callout-warning
 File 1 must be the same GTF that was passed to `cellranger-arc mkref`. If it is not, the gene IDs in the annotation object will not match the features in the counts matrix.
 :::
+
+### Do you actually need all three?
+
+Often not. We need to have **coordinates** (meaning we need a GTF whose gene IDs match your counts matrix), and **biotypes**, which only Ensembl supplies. The dictionary file is needed solely when the coordinate GTF does not already carry Ensembl transcript IDs.
+
+The three-file version below is written against the standalone Lawson GTF because that is the more general situation, and because it makes the mapping between nomenclatures explicit. In this example, we have added 2 custom transgenes to the gtf which need to be accounted for.
 
 ### Software
 
@@ -34,125 +62,148 @@ TODO: pin a reproducible environment. Options are a `renv.lock` committed alongs
 
 ```{r}
 #| label: libraries
-library(rtracklayer)
+library(tidyverse)
 library(GenomicRanges)
+library(rtracklayer)
+
+set.seed(1234)
 ```
 
 ### Setting paths
 
 ```{r}
 #| label: annotation-paths
-refDir <- "/users/mike/Desktop/multiome-tutorial/references/"
+#----- Set paths
+wd <- "/Volumes/GMBSR_bioinfo/Labs/kasper/250613_10x_multiome_redo/"
+files <- paste0(wd, "files/")
+filesDir <- paste0(files, "lawson_db_info/")
 
-# Coordinates and features; the GTF used to build the CellRanger reference
-lawsonGTFpath <- paste0(refDir, "GTFs/lawson_zebrafish.gtf")
-
-# Dictionary: Lawson gene_id <-> Ensembl transcript_id
-llV4path <- paste0(refDir, "GTFs/V4.3.2.validated.gtf")
-
-# Reference annotation carrying gene_biotype
-GRCz11path <- paste0(refDir, "GTFs/Danio_rerio.GRCz11.113.gtf")
+#----- Create directories
+create <- c(files, filesDir, paste0(filesDir, "Database_Info/"))
+for (i in create) {
+  if (!dir.exists(i)) {
+    dir.create(i)
+  }
+}
 ```
 
-### Building the biotype dictionary
-
-The chain runs in three steps. Ensembl supplies the biotype for each transcript ID. The validated Lawson GTF maps those transcript IDs to Lawson gene IDs. The result is a lookup table keyed on Lawson gene IDs.
-
 ```{r}
-#| label: biotype-lookup
-# Ensembl: transcript_id -> gene_biotype
-ens   <- rtracklayer::import(GRCz11path, format = "gtf")
-ensTx <- as.data.frame(mcols(ens))
-ensTx <- ensTx[ensTx$type == "transcript", c("transcript_id", "gene_biotype")]
-
-# Lawson validated: gene_id <-> transcript_id
-ll   <- rtracklayer::import(llV4path, format = "gtf")
-llTx <- as.data.frame(mcols(ll))
-llTx <- unique(llTx[llTx$type == "transcript", c("gene_id", "transcript_id")])
-
-# Join and collapse to one biotype per Lawson gene_id
-map <- merge(llTx, ensTx, by = "transcript_id", all.x = TRUE)
-map <- map[!is.na(map$gene_biotype), c("gene_id", "gene_biotype")]
-map <- map[!duplicated(map$gene_id), ]
+#| label: gtf-paths
+lawsonGTFpath <- paste0(filesDir, "GTFs/lawson_zebrafish.gtf") # Lawson
+llV4path <- paste0(filesDir, "GTFs/V4.3.2.validated.gtf") # Lawson-Ensembl TXIDs
+GRCz11path <- paste0(filesDir, "GTFs/Danio_rerio.GRCz11.113.gtf") # Ensembl
 ```
 
-The collapse on the last line is a decision rather than bookkeeping. A gene with several transcripts can map to more than one biotype. Taking the first asserts that any gene with a protein-coding transcript is a protein-coding gene. That is usually the intended behavior, but it is worth knowing how often it actually applies:
+### Reading in the GTF files as GRanges Objects
+
+`rtracklayer::import()` parses the GTF into a `GRanges` object. The metadata columns are pulled out into a plain data frame so they can be joined against the other two annotations. We can read in all three GTFs in the same way.
 
 ```{r}
-#| label: biotype-conflicts
-conflicts <- merge(llTx, ensTx, by = "transcript_id", all.x = TRUE)
-conflicts <- conflicts[!is.na(conflicts$gene_biotype), ]
-multi <- tapply(conflicts$gene_biotype, conflicts$gene_id,
-                function(x) length(unique(x)))
-table(multi)
-```
-
-### Applying biotypes to the Lawson annotation
-
-```{r}
-#| label: apply-biotypes
+#| label: process-lawson
+#----- Read in the lawson annotations
 annotations <- rtracklayer::import(lawsonGTFpath)
 
-idx <- match(mcols(annotations)$gene_id, map$gene_id)
-mcols(annotations)$gene_biotype <- map$gene_biotype[idx]
-mcols(annotations)$gene_biotype[is.na(mcols(annotations)$gene_biotype)] <- "Other"
+#----- Extract metadata
+annoData <- as.data.frame(mcols(annotations))
 ```
 
-Custom project-specific features (transgenes, reporters, knock-in constructs) have no Ensembl counterpart, so they fall through to `"Other"` and must be set explicitly. Match on `gene_id`, never on row position.
+Now, we read in the second Lawson Lab file which contains the mapping info. The only difference here is that we subset to just transcript rows since we are interested in linking gene IDs to Ensembl transcript IDs. By doing this, every transcript with at least one exon is represented.
 
 ```{r}
-#| label: custom-features
-transgenes <- c("<transgene_1>", "<transgene_2>")
-
-stopifnot(all(transgenes %in% mcols(annotations)$gene_id))
-
-mcols(annotations)$gene_biotype[
-  mcols(annotations)$gene_id %in% transgenes] <- "protein_coding"
+#| label: process-txid-map
+#----- This reference will map all Lawson annotations to Ensembl TXID counterparts
+ll <- rtracklayer::import(llV4path, format = "gtf")
+llmeta <- as.data.frame(mcols(ll)) %>%
+  distinct()
+llmeta <- llmeta[llmeta$type == "transcript",]
 ```
 
-::: callout-warning
-Do not assign biotypes by row index. Row positions shift whenever the GTF is regenerated, a release is bumped, or a join expands and collapses the table. Indexing by position silently relabels arbitrary genes elsewhere in the genome, with no error to catch it. The `stopifnot()` above exists so that a renamed or missing transgene fails loudly instead.
-:::
-
-### Finalizing the object
+Next, we read in the GRCz11 Ensembl annotations the same way.
 
 ```{r}
-#| label: finalize-annotation
-keep <- c("type", "gene_id", "gene_name", "transcript_id", "gene_biotype")
-mcols(annotations) <- mcols(annotations)[, keep]
-
-genome(annotations) <- "GRCz11"
-
-saveRDS(annotations,
-        file = file.path(refDir, "Lawson_annotation_with_biotypes.Rds"))
+#| label: process-ensembl
+#----- Read in the Zebrafish reference gtf from Ensembl
+grcz11gtf <- rtracklayer::import(GRCz11path, format = "gtf")
 ```
 
-Two details cause trouble later if skipped. Setting `genome()` matters because `Annotation()<-` and `TSSEnrichment()` warn or misbehave without it. And the sequence naming style has to match the fragments file:
+### Link metadata
+
+Ensembl supplies the protein-coding transcript IDs. Those are matched into the Lawson-Ensembl map to find which Lawson gene IDs they belong to, and those gene IDs are labeled `protein_coding`. Everything else becomes `Other`.
 
 ```{r}
-#| label: seqlevels-check
-seqlevelsStyle(annotations)
-head(seqlevels(annotations))
+#| label: link-metadata
+#----- Extract gene biotype and ID information
+ensemblMetadata <- as.data.frame(mcols(grcz11gtf)) %>%
+  distinct()
+ensMeta <- ensemblMetadata[ensemblMetadata$type == "transcript",]
+
+#----- Get just the protein coding genes
+pcode <- ensMeta[ensMeta$gene_biotype == "protein_coding",]
+txs <- pcode$transcript_id
+
+#----- Filter llmeta to just include those transcripts
+llsubset <- llmeta[llmeta$transcript_id %in% txs,]
+llsubset$gene_biotype <- "protein_coding"
+
+#----- Merge
+merged <- annoData %>%
+  left_join(llsubset[,c("gene_id", "gene_biotype")], by = "gene_id", relationship = "many-to-many")
+merged$gene_biotype.x <- NULL
+
+#----- Rename the column to gene_biotype
+colnames(merged)[6] <- c("gene_biotype")
+
+#----- Set NA to other
+merged$gene_biotype[is.na(merged$gene_biotype)] <- "Other"
+fileName <- paste0(filesDir, "Protein_Coding_Genes.csv")
+write.csv(merged, fileName)
 ```
 
-Ensembl-derived annotations use `1`, `2`, `3`; UCSC-derived files use `chr1`, `chr2`, `chr3`. A mismatch between the annotation and the fragments file produces zero overlaps rather than an error, which surfaces much later as an empty gene activity matrix or a TSS enrichment score of zero. Convert before saving if they differ:
+### Reconstruct GRanges object
+
+The coordinates are read back from the GTF with `read.table()` and bound to the metadata, then the biotype column is joined on and the whole thing is rebuilt as a `GRanges`.
 
 ```{r}
-#| label: seqlevels-fix
-seqlevelsStyle(annotations) <- "Ensembl"
+#| label: reconstruct-granges
+#----- Read in the original gtf file
+gtf <- read.table(lawsonGTFpath, sep = "\t")
+
+#----- Extract GRanges information
+gtf <- gtf[,1:8]
+
+#----- Combine the Granges information and the original metadata
+full <- cbind(gtf, annoData)
+
+#----- Merge
+final <- full %>%
+  left_join(merged[,c("gene_id", "gene_biotype")], by = "gene_id", relationship = "many-to-many") %>%
+  distinct()
+final$gene_biotype.x <- NULL
+colnames(final)[14] <- c("gene_biotype")
+
+#----- Change the custom annotations for the project to protein coding
+final$gene_biotype[final$gene_id %in% c("EGFP", "Kalta4")] <- c("protein_coding")
+
+#----- Save as a csv
+dbFile <- paste0(filesDir, "Database_Info/Lawson_Reference_GRanges_Meta_with_GeneBiotypes.csv")
+write.csv(final, file = dbFile)
+
+#----- Convert back to a GRanges object
+gr <- GRanges(
+  seqnames = final$V1,
+  ranges = IRanges(start = final$V4, end = final$V5),
+  strand = final$V7,
+  gene_id = final$gene_id,
+  gene_name = final$gene_name,
+  transcript_id = final$transcript_id,
+  gene_biotype = final$gene_biotype,
+  type = final$type
+)
+
+#----- Save granges object as an rds
+rdsFile <- paste0(filesDir, "Lawson_Reference_GenomicRanges_with_GeneBiotype.Rds")
+saveRDS(gr, file = rdsFile)
 ```
 
-### Checks before moving on
-
-```{r}
-#| label: annotation-checks
-table(mcols(annotations)$gene_biotype)
-mcols(annotations)[mcols(annotations)$gene_id %in% transgenes, ]
-length(unique(mcols(annotations)$gene_id))
+``` bash
 ```
-
-Confirm that the biotype table is not overwhelmingly `"Other"`, that the custom features are labeled as intended, and that the gene count falls in the expected range for the annotation. A large `"Other"` fraction usually means the dictionary join failed, most often because the two GTFs carry different identifier versions (`ENSDART00000000001` against `ENSDART00000000001.1`). Strip the version suffix and rejoin if so.
-
-## RNA Preprocessing
-
-## ATAC Preprocessing
